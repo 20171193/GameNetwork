@@ -2,7 +2,11 @@
 # 이 .gitignore 파일은 Microsoft(R) Visual Studio에서 자동으로 만들어졌습니다.
 ################################################################################
 
-/Server/Server/obj/Debug/net8.0
 /Server/Server/obj
+/Server/Server/bin
+/Server/ServerCore/obj
+/Server/ServerCore/bin
+/Server/DummyClient/obj
+/Server/DummyClient/bin
 /Server/.vs/Server
 /Server/.vs/ProjectEvaluation
