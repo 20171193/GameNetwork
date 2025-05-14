@@ -4,9 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// 포인트
+// 1. ThreadLocal
+//  - 각 스레드 별로 Buffer를 가져 스레드 안전성 확보
+//  - 최초 초기화, 재사용되는 풀링방식으로 효율적
+//
+//  but* 스레드 수가 증가하면 메모리 폭증 가능성
+//      - 스레드 수가 제한적이며, 동기화를 피해야 하는 환경에서 사용.
+
 namespace ServerCore
 {
-    public class SendBufferHelper
+    public static class SendBufferHelper
     {
         // 컨텐츠 간 경합방지
         private static ThreadLocal<SendBuffer> CurrentBuffer = new ThreadLocal<SendBuffer>(()=> { return null; });
