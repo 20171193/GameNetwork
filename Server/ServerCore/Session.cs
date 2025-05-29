@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.ObjectiveC;
 using System.Net;
+using System.ComponentModel;
 
 namespace ServerCore
 {
@@ -139,6 +140,67 @@ namespace ServerCore
             }
         }
 
+        private void RegisterRecv()
+        {
+            if (_disconnected == 1)
+                return;
+
+            // 유효 범위 세팅
+            _recvBuffer.Clean();
+            ArraySegment<byte> segment = _recvBuffer.WriteSegment;
+            _recvArgs.SetBuffer(segment.Array, segment.Offset, segment.Count);
+                
+            try
+            {
+                bool pending = _socket.ReceiveAsync(_recvArgs);
+                if (pending == false)
+                    OnRecvCompleted(null, _recvArgs);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"RegisterRecv Failed : {ex}");
+            }
+        }
+        private void OnRecvCompleted(object sender, SocketAsyncEventArgs args)
+        {
+            if(args.BytesTransferred > 0 && args.SocketError == SocketError.Success)
+            {
+                try
+                {
+                    // 쓰기 확인
+                    if(_recvBuffer.OnWrite(args.BytesTransferred) == false)
+                    {
+                        Disconnect();
+                        return;
+                    }
+
+                    // 처리할 길이 확인
+                    int processLen = OnRecv(_recvBuffer.ReadSegment);
+                    if(processLen < 0 || _recvBuffer.DataSize < processLen)
+                    {
+                        Disconnect();
+                        return;
+                    }
+
+                    // 읽기 확인
+                    if(_recvBuffer.OnRead(args.BytesTransferred) == false)
+                    {
+                        Disconnect();
+                        return;
+                    }
+
+                    RegisterRecv();
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine($"OnRecvCompleted Failed : {ex}");
+                }
+            }
+            else
+            {
+                Disconnect();
+            }
+        }
         #endregion
     }
 }
