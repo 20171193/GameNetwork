@@ -9,7 +9,7 @@ namespace ServerCore
     // 재귀적 락 허용 O
     //  : WrtierLock -> WrtierLock  : O
     //  : WrtierLock -> ReadLock    : O
-    //  : ReadLock -> WrtierLock    : X
+    //  : ReadLock -> WriterLock    : X
 
     // 스핀락 5,000
     
@@ -32,6 +32,7 @@ namespace ServerCore
 
         int _writeCount = 0;
 
+        #region Write (독점)
         public void WriteLock()
         {
             // 재귀적 락 허용
@@ -39,6 +40,7 @@ namespace ServerCore
             int lockThreadId = (_flag & WRITE_MASK) >> 16;
             if(Thread.CurrentThread.ManagedThreadId == lockThreadId)
             {
+                // 카운팅만 진행
                 _writeCount++;
                 return;
             }
@@ -49,11 +51,9 @@ namespace ServerCore
             {
                 for(int i =0; i<MAX_SPIN_COUNT; i++)
                 {
-                    // 원자적 연산
-                    //  : _flag가 EMPTY_FLAG일 경우 desired로 전환 후 EMPTY_FLAG 반환
+                    // EMPTY_FLAG인 경우 소유권 획득
                     if(Interlocked.CompareExchange(ref _flag, desired, EMPTY_FLAG) == EMPTY_FLAG)
                     {
-                        // 소유권 획득 시 
                         _writeCount = 1;
                         return;
                     }
@@ -64,7 +64,6 @@ namespace ServerCore
             }
 
         }
-
         public void WriteUnLock()
         {
             // 재귀적 락 허용
@@ -73,5 +72,36 @@ namespace ServerCore
             if (lockCount == 0)
                 Interlocked.Exchange(ref _flag, EMPTY_FLAG);
         }
+        #endregion
+
+        #region Read (다중 획득)
+        public void ReadLock()
+        {
+            // 재귀적 락 허용
+            //  : WriteLock -> ReadLock (X)
+            int lockThreadId = (_flag & WRITE_MASK) >> 16;
+            if(Thread.CurrentThread.ManagedThreadId == lockThreadId)
+            {
+                Interlocked.Increment(ref _flag);
+                return;
+            }
+
+            while(true)
+            {
+                for(int i =0; i<MAX_SPIN_COUNT; i++)
+                {
+                    // WriteLock을 획득하고 있지 않은 경우 ReadCount증가
+                    int expected = (_flag & READ_MASK);
+                    if (Interlocked.CompareExchange(ref _flag, expected + 1, expected) == expected)
+                        return;
+                }
+                Thread.Yield();
+            }
+        }
+        public void ReadUnLock()
+        {
+            Interlocked.Decrement(ref _flag);
+        }
+        #endregion
     }
 }
