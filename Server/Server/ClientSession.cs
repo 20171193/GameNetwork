@@ -17,6 +17,7 @@ namespace Server
 
         public override void OnRecvPacket(ArraySegment<byte> buffer)
         {
+
         }
 
         public override void OnDisconnected(EndPoint endPoint)
