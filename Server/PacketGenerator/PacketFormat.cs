@@ -155,6 +155,37 @@ public class {0} : IPacket
 ";
         #endregion
 
+        #region Member Format
+        // {0} : 변수 형식
+        // {1} : 변수 이름
+        public static string memberFormat =
+@"public {0} {1};";
+
+        // {0} : 리스트 이름 [대문자]
+        // {1} : 리스트 이름 [소문자]
+        // {2} : 멤버 변수들
+        // {3} : 멤버 변수 Read
+        // {4} : 멤버 변수 Write
+        public static string memberListFormat =
+@"public class {0}
+{{
+	{2}
+
+	public void Read(ReadOnlySpan<byte> s, ref ushort count)
+	{{
+		{3}
+	}}
+
+	public bool Write(Span<byte> s, ref ushort count)
+	{{
+		bool success = true;
+		{4}
+		return success;
+	}}	
+}}
+public List<{0}> {1}s = new List<{0}>();";
+        #endregion
+
         #region Read Format
         // {0} : 변수 이름
         // {1} : To~ 변수 형식
