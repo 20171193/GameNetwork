@@ -11,3 +11,5 @@
 /Server/.vs/Server
 /Server/.vs/ProjectEvaluation
 /Server/PacketGenerator/obj
+/Server/Common
+/Server/PacketGenerator/bin
