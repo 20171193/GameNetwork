@@ -6,12 +6,14 @@ namespace ServerCore
     public class Listener
     {
         private Socket _listenSocket;
+        private Func<Session> _sessionFactory;
 
         /// <param name="register"> 비동기 요청 개수 </param>
         /// <param name="backlog"> 버퍼링 최대개수 </param>
-        public void Init(IPEndPoint endPoint, int register = 10, int backlog = 100)
+        public void Init(IPEndPoint endPoint, Func<Session> sessionFactory, int register = 10, int backlog = 100)
         {
             _listenSocket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            _sessionFactory = sessionFactory;
 
             _listenSocket.Bind(endPoint);
 
@@ -43,8 +45,10 @@ namespace ServerCore
             if(args.SocketError == SocketError.Success)
             {
                 // 세션 생성
-
+                Session session = _sessionFactory.Invoke();
+                session.Start(args.AcceptSocket);
                 // 연결
+                session.OnConnected(args.AcceptSocket.RemoteEndPoint);
             }
             else
                 Console.WriteLine(args.SocketError.ToString());
