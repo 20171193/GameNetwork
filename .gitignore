@@ -16,20 +16,20 @@
 /Server/PacketGenerator/bin
 
 # ===== 클라이언트 관련 (Unity) =====
-/Client/[Ll]ibrary/
-/Client/[Tt]emp/
-/Client/[Oo]bj/
-/Client/[Bb]uild/
-/Client/Builds/
-/Client/[Ll]ogs/
-/Client/[Uu]serSettings/
-/Client/.vs/
+/MMORPG/[Ll]ibrary/
+/MMORPG/[Tt]emp/
+/MMORPG/[Oo]bj/
+/MMORPG/[Bb]uild/
+/MMORPG/Builds/
+/MMORPG/[Ll]ogs/
+/MMORPG/[Uu]serSettings/
+/MMORPG/.vs/
 
 # VSCode 관련 (유니티에서도 자주 씀)
-/Client/.vscode/
+/MMORPG/.vscode/
 
 # JetBrains Rider 관련
-/Client/.idea/
+/MMORPG/.idea/
 
 # 시스템 파일
 .DS_Store
