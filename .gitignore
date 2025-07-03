@@ -2,6 +2,7 @@
 # 이 .gitignore 파일은 Microsoft(R) Visual Studio에서 자동으로 만들어졌습니다.
 ################################################################################
 
+# ===== 서버 관련(VS) =====
 /Server/Server/obj
 /Server/Server/bin
 /Server/ServerCore/obj
@@ -13,3 +14,23 @@
 /Server/PacketGenerator/obj
 /Server/Common
 /Server/PacketGenerator/bin
+
+# ===== 클라이언트 관련 (Unity) =====
+/Client/[Ll]ibrary/
+/Client/[Tt]emp/
+/Client/[Oo]bj/
+/Client/[Bb]uild/
+/Client/Builds/
+/Client/[Ll]ogs/
+/Client/[Uu]serSettings/
+/Client/.vs/
+
+# VSCode 관련 (유니티에서도 자주 씀)
+/Client/.vscode/
+
+# JetBrains Rider 관련
+/Client/.idea/
+
+# 시스템 파일
+.DS_Store
+Thumbs.db
