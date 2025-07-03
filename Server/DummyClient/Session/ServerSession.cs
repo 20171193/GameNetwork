@@ -12,21 +12,21 @@ namespace DummyClient
     {
         public override void OnConnected(EndPoint endPoint)
         {
-            ;
+            Console.WriteLine($"OnConnected : {endPoint}");
         }
         public override void OnDisconnected(EndPoint endPoint)
         {
-            ;
+            Console.WriteLine($"OnDisconnected : {endPoint}");
         }
 
         public override void OnRecvPacket(ArraySegment<byte> buffer)
         {
-            // Todo - PacketManager 연동    
+            PacketManager.Instance.OnRecvPacket(this, buffer);
         }
 
         public override void OnSend(int numOfBytes)
         {
-            ;
+            Console.WriteLine($"Transferred bytes: {numOfBytes}");
         }
     }
 }

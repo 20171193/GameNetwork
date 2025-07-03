@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Sockets;
 using DummyClient.Session;
 using ServerCore;
 
@@ -12,7 +13,8 @@ namespace DummyClient
             // DSN : 이름으로 IP 주소 찾기
             string host = Dns.GetHostName();
             IPHostEntry ipHost = Dns.GetHostEntry(host);
-            IPAddress ipAddr = ipHost.AddressList[0];
+            IPAddress ipAddr 
+                = ipHost.AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork);
             IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
 
             Connector connector = new Connector();
@@ -32,7 +34,6 @@ namespace DummyClient
                     Console.WriteLine(ex.ToString());
                 }
 
-                // 1초에 4번 정도
                 Thread.Sleep(250);
             }
         }
